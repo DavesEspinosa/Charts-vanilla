@@ -4,48 +4,118 @@ import ApexCharts from  'apexcharts'
 
 async function petition() {
   try{
-    // const headers = {
-    //   "method": "GET",
-    //   "headers": {
-    //     "x-rapidapi-host": "rawg-video-games-database.p.rapidapi.com",
-    //     "x-rapidapi-key": "4a192c5e44mshc97b1a2d4b82251p137cb0jsnfb7ef90cb4af"
-    //   }
-    // }
-    const response = await fetch("https://yoga-app-m1.herokuapp.com/yoga")
-    const data =  await response.json();
+    const response = await fetch("https://swapi.dev/api/people")
+    const data = await response.json();
     handleData(data)
   }catch (error){
     console.log(error)
   }
 };
 
+const test = (results, value) => {
+  const array = results.map(result => {
+    switch(value){
+      case 'Mass':
+        return result.mass
+        
+        case 'Height':
+          return result.height
+          
+          case 'Birth Year':
+            if(result.birth_year !== 'unknown') {
+              return result.birth_year.slice(0,-3)
+            }else {
+              return '25'
+            }
+    
+        default:
+          break;
+      }
+  })
+  console.log(array)
+  return array
+}
+
 const handleData = (data) => {
-  console.log(data)
-  // Write Javascript code!
-  const appDiv = document.getElementById('app');
-  appDiv.innerHTML = `<h1>JS Starter</h1>`;
+  const {results} = data
+  console.log(results)
 
   var options = {
     series: [{
-    data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
-  }],
-    chart: {
-    type: 'bar',
-    height: 350
-  },
-  plotOptions: {
-    bar: {
-      borderRadius: 4,
-      horizontal: true,
+      name: "Height",
+      data: test(results, "Height")
+    },
+    {
+      name: "Mass",
+      data: test(results, "Mass")
+    },
+    {
+      name: 'Birth Year',
+      data: test(results, "Birth Year")
     }
+  ],
+    chart: {
+    height: 350,
+    type: 'line',
+    zoom: {
+      enabled: false
+    },
   },
   dataLabels: {
     enabled: false
   },
+  stroke: {
+    width: [5, 7, 5],
+    curve: 'straight',
+    dashArray: [0, 8, 5]
+  },
+  title: {
+    text: 'Page Statistics',
+    align: 'left'
+  },
+  legend: {
+    tooltipHoverFormatter: function(val, opts) {
+      return val + ' - ' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + ''
+    }
+  },
+  markers: {
+    size: 0,
+    hover: {
+      sizeOffset: 6
+    }
+  },
   xaxis: {
-    categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
-      'United States', 'China', 'Germany'
+    categories: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan', '07 Jan', '08 Jan', '09 Jan',
+      '10 Jan', '11 Jan', '12 Jan'
     ],
+  },
+  tooltip: {
+    y: [
+      {
+        title: {
+          formatter: function (val) {
+            return val + " (mins)"
+          }
+        }
+      },
+      {
+        title: {
+          formatter: function (val) {
+            return val + " per session"
+          }
+        }
+      },
+      {
+        title: {
+          formatter: function (val) {
+            return val;
+          }
+        }
+      }
+    ]
+  },
+  grid: {
+    borderColor: '#f1f1f1',
   }
   };
 
@@ -54,5 +124,5 @@ const handleData = (data) => {
 
 }
 
-petition()
+  petition()
 
