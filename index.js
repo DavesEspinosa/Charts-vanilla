@@ -4,54 +4,50 @@ import ApexCharts from  'apexcharts'
 
 async function petition() {
   try{
-    const response = await fetch("https://swapi.dev/api/people")
-    const data = await response.json();
-    handleData(data)
-  }catch (error){
-    console.log(error)
-  }
+      const response = await fetch("https://api.streamhatchet.com/discovery/games/month/2021-01?token=kx8Lm6spO9Lx6xNa8lNC51Kx20Qg65")
+      const data = await response.json();
+      handleData(data)
+    }catch (error){
+      console.log(error)
+    }
 };
 
 const test = (results, value) => {
   const array = results.map(result => {
     switch(value){
-      case 'Mass':
-        return result.mass
+      case 'Air Time':
+        return result.airtime_hours
         
-        case 'Height':
-          return result.height
+        case 'Peak Channels':
+          return result.peak_channels
           
-          case 'Birth Year':
-            if(result.birth_year !== 'unknown') {
-              return result.birth_year.slice(0,-3)
-            }else {
-              return '25'
-            }
+        case 'Average Viewers':
+          return result.average_viewers
     
         default:
           break;
       }
+      console.log(array)
   })
-  console.log(array)
   return array
 }
 
 const handleData = (data) => {
-  const {results} = data
-  console.log(results)
+  const { games } = data
+  console.log(games)
 
   var options = {
     series: [{
-      name: "Height",
-      data: test(results, "Height")
+      name: "Air Time",
+      data: test(games, "Air Time")
     },
     {
-      name: "Mass",
-      data: test(results, "Mass")
+      name: "Peak Channels",
+      data: test(games, "Peak Channels")
     },
     {
-      name: 'Birth Year',
-      data: test(results, "Birth Year")
+      name: 'Average Viewers',
+      data: test(games, "Average Viewers")
     }
   ],
     chart: {
