@@ -1,34 +1,40 @@
 import ApexCharts from 'apexcharts';
 
 export const handleAttribute = (games, platforms, attributes) => {
-  const attrIncrease = attributes.filter(attribute => attribute !== 'platform')
-  
-  const attributesFiltered = attrIncrease.filter(attribute => !attribute.includes('_increase'))
-console.log(attributesFiltered)
-attributesFiltered.forEach(attribute => {
+  const attributesFiltered = attributes.filter(attribute => attribute !== 'platform').filter(attribute => !attribute.includes('_increase'))
+
+  attributesFiltered.forEach(attribute => {
+    const app = document.querySelector('#app')
     const chart = document.createElement('div');
     chart.setAttribute("id", attribute);
-    document.body.appendChild(chart);
-    handleData(games, platforms, attribute, attribute)
-
+    app.appendChild(chart);
+    handleData(games, platforms, attribute)
   })
 }
 
-const handleData = (games, platforms, attribute, selector) => {
+const handleData = (games, platforms, attribute) => {
   const initData = {};
   const dataSeries = []
 
   platforms.forEach((platform) => {
     initData[platform] = Array(games.length).fill(0);
   });
-
+  
   const data = games.reduce((prev, curr, gameIndex) => {
+    //prev es el initData creado para albergar las plataformas de forma dinamica
+    //curr es el juego que se esta iterando en ése momento
+    //se entra dentro del curr(game) para iterar en cada platform_data
+    //
     curr.platform_data.forEach((platformData) => {
+      //accesing to initdata object throw platfomr key on that precise index of games
+      //accesing straight to the value of that concrete parameter throw the key
+      // if(platformData[attribute]) prev[platformData.platform][gameIndex] = ((platformData[attribute])*1e-4).toFixed(2);
       prev[platformData.platform][gameIndex] = platformData[attribute];
+
     });
     return prev;
   }, initData);
-
+  
   console.log(data)
   Object.entries(data).map(item => {
     dataSeries.push({
@@ -54,7 +60,7 @@ const handleData = (games, platforms, attribute, selector) => {
       colors: ['#fff'],
     },
     title: {
-      text: attribute,
+      text: attribute.replace('_',' ').toUpperCase(),
     },
     xaxis: {
       title: {
@@ -92,6 +98,6 @@ const handleData = (games, platforms, attribute, selector) => {
 
 
 
-  var chart = new ApexCharts(document.querySelector(`#${selector}`), options);
+  var chart = new ApexCharts(document.querySelector(`#${attribute}`), options);
   chart.render();
 };
