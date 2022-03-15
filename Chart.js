@@ -1,26 +1,20 @@
 import ApexCharts from 'apexcharts';
 
 export const handleAttribute = (games, platforms, attributes) => {
-  console.log(attributes)
-  attributes.forEach(attribute => {
-    switch (attribute) {
-      case 'hours_watched':
-        handleData(games, platforms, attribute, 'chart1')
-        break;
-      case 'airtime_hours':
-        handleData(games, platforms, attribute, 'chart2')
-        break;
-      case 'average_viewers':
-        handleData(games, platforms, attribute, 'chart3')
-      break;
-      default:
-          break;
-    } 
+  const attrIncrease = attributes.filter(attribute => attribute !== 'platform')
+  
+  const attributesFiltered = attrIncrease.filter(attribute => !attribute.includes('_increase'))
+console.log(attributesFiltered)
+attributesFiltered.forEach(attribute => {
+    const chart = document.createElement('div');
+    chart.setAttribute("id", attribute);
+    document.body.appendChild(chart);
+    handleData(games, platforms, attribute, attribute)
+
   })
 }
 
 export const handleData = (games, platforms, attribute, selector) => {
-  console.log(selector)
   const initData = {};
   const dataSeries = []
 
@@ -35,6 +29,7 @@ export const handleData = (games, platforms, attribute, selector) => {
     return prev;
   }, initData);
 
+  console.log(data)
   Object.entries(data).map(item => {
     dataSeries.push({
       name: item[0].toUpperCase(),
@@ -42,13 +37,11 @@ export const handleData = (games, platforms, attribute, selector) => {
     })
   })
 
-  console.log(dataSeries)
-
   var options = {
     series: dataSeries,
     chart: {
       type: 'bar',
-      height: 700,
+      height: 800,
       stacked: true,
     },
     plotOptions: {
@@ -57,7 +50,7 @@ export const handleData = (games, platforms, attribute, selector) => {
       },
     },
     stroke: {
-      width: 1,
+      width: 0.5,
       colors: ['#fff'],
     },
     title: {
@@ -96,6 +89,8 @@ export const handleData = (games, platforms, attribute, selector) => {
       offsetX: 40,
     },
   };
+
+
 
   var chart = new ApexCharts(document.querySelector(`#${selector}`), options);
   chart.render();
