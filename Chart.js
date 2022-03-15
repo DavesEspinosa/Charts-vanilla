@@ -1,109 +1,81 @@
-import ApexCharts from  'apexcharts'
+import ApexCharts from 'apexcharts';
 
-export  const test = (results, value) => {
-  const array = results.map(result => {
-    switch(value){
-      case 'Air Time':
-        return result.airtime_hours
-        
-        case 'Peak Channels':
-          return result.peak_channels
-          
-        case 'Average Viewers':
-          return result.average_viewers
-    
-        default:
-          break;
-      }
+export const handleData = (games, platforms, attribute) => {
+  const initData = {};
+  const dataSeries = []
+
+  platforms.forEach((platform) => {
+    initData[platform] = Array(games.length).fill(0);
+  });
+  console.log(initData);
+
+  const data = games.reduce((prev, curr, gameIndex) => {
+    curr.platform_data.forEach((platformData) => {
+      prev[platformData.platform][gameIndex] = platformData[attribute];
+    });
+    return prev;
+  }, initData);
+
+  Object.entries(data).map(item => {
+    dataSeries.push({
+      name: item[0].toUpperCase(),
+      data: item[1]
     })
-    console.log(array)
-  return array
-}
-
-export const handleData = (data) => {
-  const { games } = data
-  console.log(games)
+  })
 
   var options = {
-    series: [{
-      name: "Air Time",
-      data: test(games, "Air Time")
-    },
-    {
-      name: "Peak Channels",
-      data: test(games, "Peak Channels")
-    },
-    {
-      name: 'Average Viewers',
-      data: test(games, "Average Viewers")
-    }
-  ],
+    series: dataSeries,
     chart: {
-    height: 350,
-    type: 'line',
-    zoom: {
-      enabled: false
+      type: 'bar',
+      height: 700,
+      stacked: true,
     },
-  },
-  dataLabels: {
-    enabled: false
-  },
-  stroke: {
-    width: [5, 7, 5],
-    curve: 'straight',
-    dashArray: [0, 8, 5]
-  },
-  title: {
-    text: 'Page Statistics',
-    align: 'left'
-  },
-  legend: {
-    tooltipHoverFormatter: function(val, opts) {
-      return val + ' - ' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + ''
-    }
-  },
-  markers: {
-    size: 0,
-    hover: {
-      sizeOffset: 6
-    }
-  },
-  xaxis: {
-    categories: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan', '06 Jan', '07 Jan', '08 Jan', '09 Jan',
-      '10 Jan', '11 Jan', '12 Jan'
-    ],
-  },
-  tooltip: {
-    y: [
-      {
-        title: {
-          formatter: function (val) {
-            return val + " (mins)"
-          }
-        }
+    plotOptions: {
+      bar: {
+        horizontal: true,
       },
-      {
-        title: {
-          formatter: function (val) {
-            return val + " per session"
-          }
-        }
+    },
+    stroke: {
+      width: 1,
+      colors: ['#fff'],
+    },
+    title: {
+      text: attribute,
+    },
+    xaxis: {
+      title: {
+        text: undefined,
       },
-      {
-        title: {
-          formatter: function (val) {
-            return val;
-          }
-        }
-      }
-    ]
-  },
-  grid: {
-    borderColor: '#f1f1f1',
-  }
+      type: 'category',
+      categories: games.map((game) => game.game),
+      labels: {
+        formatter: function (val) {
+          return val;
+        },
+      },
+    },
+    yaxis: {
+      title: {
+        text: undefined,
+      },
+    },
+    tooltip: {
+      y: {
+        formatter: function (val) {
+          return val + 'K';
+        },
+      },
+    },
+    fill: {
+      opacity: 1,
+    },
+    legend: {
+      position: 'top',
+      horizontalAlign: 'left',
+      offsetX: 40,
+    },
   };
 
-  var chart = new ApexCharts(document.querySelector("#app"), options);
+  var chart = new ApexCharts(document.querySelector('#app'), options);
   chart.render();
-
-}
+};
