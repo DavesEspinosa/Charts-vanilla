@@ -1,13 +1,33 @@
 import ApexCharts from 'apexcharts';
 
-export const handleData = (games, platforms, attribute) => {
+export const handleAttribute = (games, platforms, attributes) => {
+  console.log(attributes)
+  attributes.forEach(attribute => {
+    switch (attribute) {
+      case 'hours_watched':
+        handleData(games, platforms, attribute, 'chart1')
+        break;
+      case 'airtime_hours':
+        handleData(games, platforms, attribute, 'chart2')
+        break;
+      case 'average_viewers':
+        handleData(games, platforms, attribute, 'chart3')
+      break;
+      default:
+          break;
+    } 
+  })
+}
+
+
+export const handleData = (games, platforms, attribute, selector) => {
+  console.log(selector)
   const initData = {};
   const dataSeries = []
 
   platforms.forEach((platform) => {
     initData[platform] = Array(games.length).fill(0);
   });
-  console.log(initData);
 
   const data = games.reduce((prev, curr, gameIndex) => {
     curr.platform_data.forEach((platformData) => {
@@ -22,6 +42,8 @@ export const handleData = (games, platforms, attribute) => {
       data: item[1]
     })
   })
+
+  console.log(dataSeries)
 
   var options = {
     series: dataSeries,
@@ -76,6 +98,6 @@ export const handleData = (games, platforms, attribute) => {
     },
   };
 
-  var chart = new ApexCharts(document.querySelector('#app'), options);
+  var chart = new ApexCharts(document.querySelector(`#${selector}`), options);
   chart.render();
 };
