@@ -19,7 +19,6 @@ export const handleAttribute = (games, platforms, attributes) => {
   })
 }
 
-
 export const handleData = (games, platforms, attribute, selector) => {
   console.log(selector)
   const initData = {};
