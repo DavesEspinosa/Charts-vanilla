@@ -14,7 +14,7 @@ attributesFiltered.forEach(attribute => {
   })
 }
 
-export const handleData = (games, platforms, attribute, selector) => {
+const handleData = (games, platforms, attribute, selector) => {
   const initData = {};
   const dataSeries = []
 

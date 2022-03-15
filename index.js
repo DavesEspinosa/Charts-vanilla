@@ -1,6 +1,6 @@
 // Import stylesheets
 import './style.css';
-import { handleData, handleAttribute } from './Chart.js'
+import { handleAttribute } from './Chart.js'
 
 async function petition() {
   try{
