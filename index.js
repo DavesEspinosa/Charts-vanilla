@@ -1,6 +1,6 @@
 // Import stylesheets
 import './style.css';
-import { handleAttribute } from './Chart.js'
+import { handleData } from './Chart.js'
 
 async function petition() {
   try{
@@ -14,8 +14,7 @@ async function petition() {
       })
       const platforms = [...new Set(arrPlatforms.flat())]
       
-      handleAttribute(games, platforms, attributes)
-      // handleData(games, platforms, 'hours_watched')
+      handleData(games, platforms, attributes)
   } catch (error){
     console.log(error)
   }
